@@ -571,8 +571,10 @@ The values above are an example of the response structure. Actual values depend 
 Recommended Python version:
 
 ```text
-Python 3.10 or Python 3.11
+Python 3.11
 ```
+
+TensorFlow is the limiting dependency for deployment. This project pins `tensorflow==2.13.1`, which has Linux wheels for Python 3.11 but not Python 3.14. If Streamlit Community Cloud logs show `Using Python 3.14.5 environment`, dependency installation will fail before the app starts.
 
 Create and activate a virtual environment on Windows PowerShell:
 
@@ -593,6 +595,18 @@ Install Flask API dependencies:
 ```powershell
 python -m pip install -r requirements_api.txt
 ```
+
+### Streamlit Community Cloud Python Version
+
+`runtime.txt` is kept as `python-3.11`, but Streamlit Community Cloud may still use the Python version selected in the app's deployment settings. If the build log shows Python 3.14, fix the deployment settings:
+
+1. Open your app in Streamlit Community Cloud.
+2. Go to app settings and note the current repository, branch, entrypoint, subdomain, and secrets.
+3. Delete the deployed app if Streamlit does not let you edit the Python version in place.
+4. Create/deploy the app again from the same GitHub repository.
+5. In **Advanced settings**, set **Python version** to **3.11** before deploying.
+
+Changing only `requirements.txt` cannot fix a Python 3.14 build for this TensorFlow-based app, because TensorFlow does not provide compatible Python 3.14 wheels.
 
 The Streamlit dependency file contains:
 
