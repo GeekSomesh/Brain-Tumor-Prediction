@@ -4,6 +4,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+try:
+  import keras
+except ImportError:
+  keras = None
+
 def image_preprocess(image):
     # Convert NumPy array to TensorFlow tensor
     image = tf.convert_to_tensor(image, dtype=tf.float32)
@@ -70,11 +75,16 @@ def load_models():
     if not all(os.path.exists(path) for path in [densenet_path, vgg19_path, xception_path, effnet_path]):
         raise FileNotFoundError("One or more model files are missing from the weights directory")
     
-    # Load all models
-    densenet = tf.keras.models.load_model(densenet_path)
-    vgg19 = tf.keras.models.load_model(vgg19_path)
-    xception = tf.keras.models.load_model(xception_path)
-    effnet = tf.keras.models.load_model(effnet_path)
+    # Load all models. Prefer Keras loader for Keras 3-saved .keras files.
+    def _load_model(path):
+      if keras is not None:
+        return keras.models.load_model(path, compile=False)
+      return tf.keras.models.load_model(path, compile=False)
+
+    densenet = _load_model(densenet_path)
+    vgg19 = _load_model(vgg19_path)
+    xception = _load_model(xception_path)
+    effnet = _load_model(effnet_path)
     
     return densenet, vgg19, xception, effnet
 
