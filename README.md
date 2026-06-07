@@ -596,43 +596,6 @@ Install Flask API dependencies:
 python -m pip install -r requirements_api.txt
 ```
 
-### Streamlit Community Cloud Python Version
-
-`runtime.txt` is kept as `python-3.11`, but Streamlit Community Cloud may still use the Python version selected in the app's deployment settings. If the build log shows Python 3.14, fix the deployment settings:
-
-1. Open your app in Streamlit Community Cloud.
-2. Go to app settings and note the current repository, branch, entrypoint, subdomain, and secrets.
-3. Delete the deployed app if Streamlit does not let you edit the Python version in place.
-4. Create/deploy the app again from the same GitHub repository.
-5. In **Advanced settings**, set **Python version** to **3.11** before deploying.
-
-Changing only `requirements.txt` cannot fix a Python 3.14 build for this TensorFlow-based app, because TensorFlow does not provide compatible Python 3.14 wheels.
-
-The Streamlit dependency file contains:
-
-```text
-streamlit
-pandas
-numpy
-seaborn
-tensorflow
-Pillow
-gdown
-```
-
-The API dependency file contains:
-
-```text
-flask==2.0.1
-flask-cors==3.0.10
-tensorflow==2.15.0
-numpy==2.3.2
-Pillow==11.3.0
-gunicorn==20.1.0
-```
-
-Note: TensorFlow 2.15 environments commonly require a NumPy version below 2.0. If installation or import fails, adjust the API NumPy pin to a TensorFlow-compatible version.
-
 ## Running the Project
 
 ### Run the Streamlit App
